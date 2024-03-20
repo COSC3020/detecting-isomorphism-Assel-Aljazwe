@@ -1,35 +1,45 @@
 function areIsomorphic(graph1, graph2) {
-    const vertices1 = Object.keys(graph1);
-    const vertices2 = Object.keys(graph2);
-
+    const vertices1 = Object.keys(graph1).sort();
+    const vertices2 = Object.keys(graph2).sort();
+    // Quick check to make sure both graphs have same number of vertices
     if (vertices1.length !== vertices2.length) return false;
 
-    const isBijection = (mapping, graph1, graph2) => {
-        for (let i = 0; i < vertices1.length; i++) {
-            for (let j = i + 1; j < vertices1.length; j++) {
-                let u = vertices1[i], v = vertices1[j];
-                // Check if (u,v) in E1 implies (f(u),f(v)) in E2, and vice versa
-                if ((graph1[u].includes(v)) !== graph2[mapping[u]].includes(mapping[v])) {
+    const usedVertices = new Set();
+    const bijection = {};
+    // Checks if the current mapping preserves adjacency between Graph1 and Graph2
+    const checkIsomorphism = () => {
+        for (let u of vertices1) {
+            for (let v of graph1[u]) {
+                if (!(graph2[bijection[u]].includes(bijection[v]))) {
                     return false;
                 }
             }
         }
         return true;
     };
-    
-    const generateMapping = (vertices1, vertices2) => {
-        let mapping = {};
-        let shuffledVertices2 = vertices2.sort(() => 0.5 - Math.random());
-        vertices1.forEach((vertex, index) => {
-            mapping[vertex] = shuffledVertices2[index];
-        });
-        return mapping;
+    // Recursively mapping vertices to attempt to create a valid bijection
+    const attemptMapping = (index) => {
+        if (index === vertices1.length) {
+            return checkIsomorphism();
+        }
+
+        const u = vertices1[index];
+        for (let v of vertices2) {
+            if (!usedVertices.has(v)) {
+                bijection[u] = v;
+                usedVertices.add(v);
+                if (attemptMapping(index + 1)) {
+                    return true;
+                }
+                usedVertices.delete(v);
+            }
+        }
+        return false;
     };
 
-    // Attempt to find a bijection that satisfies the isomorphism condition
-    let mapping = generateMapping(vertices1, vertices2);
-    return isBijection(mapping, graph1, graph2);
+    return attemptMapping(0);
 }
 
 module.exports = { areIsomorphic };
+
 
