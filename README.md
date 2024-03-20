@@ -51,4 +51,6 @@ $$\Theta(n!)$$
 
 This demonstrates the algorithm's exhaustive approach, as it tests all potential vertex pairings to identify a correct bijection that maintains all edge relationships. However, this method becomes too demanding for larger graphs due to the exponential increase in permutations. 
 
-Reference: https://networkx.org/nx-guides/content/algorithms/isomorphism/isomorphism.html
+References: 
+https://stackoverflow.com/questions/3876354/algorithm-for-determining-if-2-graphs-are-isomorphic
+https://networkx.org/nx-guides/content/algorithms/isomorphism/isomorphism.html
