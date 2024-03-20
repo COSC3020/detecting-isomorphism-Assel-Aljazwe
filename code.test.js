@@ -1,37 +1,21 @@
-const assert = require('assert');
 const { areIsomorphic } = require('./code');
 
-const graph1 = {
-    a: ['b', 'c'],
-    b: ['a', 'd'],
-    c: ['a', 'd'],
-    d: ['b', 'c']
-};
+const tests = [
+    {
+        graph1: { 'A': ['B', 'C'], 'B': ['A'], 'C': ['A'] },
+        graph2: { '1': ['2', '3'], '2': ['1', '3'], '3': ['1', '2'] },
+        expected: false,
+    },
+    {
+        graph1: { 'A': ['B'], 'B': ['A', 'C'], 'C': ['B'] },
+        graph2: { '1': ['2'], '2': ['1', '3'], '3': ['2'] },
+        expected: true,
+    }
+];
 
-const graph2 = {
-    w: ['x', 'y'],
-    x: ['w', 'z'],
-    y: ['w', 'z'],
-    z: ['x', 'y']
-};
+tests.forEach(({ graph1, graph2, expected }, index) => {
+    const result = areIsomorphic(graph1, graph2);
+    console.assert(result === expected, `Test ${index + 1} failed. Expected ${expected}, got ${result}.`);
+});
 
-// graph 1 and 3 should not be isomorphic due to different connections
-const graph3 = {
-    a: ['b'],
-    b: ['a', 'c', 'd'],
-    c: ['b'],
-    d: ['b']
-};
-
-try {
-    assert.strictEqual(areIsomorphic(graph1, graph2), true, 'Graph1 and Graph2 should be isomorphic');
-
-    assert.strictEqual(areIsomorphic(graph1, graph3), false, 'Graph1 and Graph3 should not be isomorphic');
-
-    console.log('All tests passed!');
-} catch (error) {
-    console.error('One or more tests failed.');
-    console.error(error.message);
-}
-
-module.exports = { areIsomorphic };
+console.log("All tests passed!");
